@@ -220,13 +220,13 @@ public class MinesweeperGame {
         if (colum + 1 < BOARD_COLUM_SIZE && landMines[row][colum + 1]) {
             count++;
         }
-        if (row + 1 < 8 && colum - 1 >= 0 && landMines[row + 1][colum - 1]) {
+        if (row + 1 < BOARD_ROW_SIZE && colum - 1 >= 0 && landMines[row + 1][colum - 1]) {
             count++;
         }
-        if (row + 1 < 8 && landMines[row + 1][colum]) {
+        if (row + 1 < BOARD_ROW_SIZE && landMines[row + 1][colum]) {
             count++;
         }
-        if (row + 1 < 8 && colum + 1 < BOARD_COLUM_SIZE && landMines[row + 1][colum + 1]) {
+        if (row + 1 < BOARD_ROW_SIZE && colum + 1 < BOARD_COLUM_SIZE && landMines[row + 1][colum + 1]) {
             count++;
         }
         return count;
