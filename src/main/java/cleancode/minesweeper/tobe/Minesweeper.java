@@ -1,17 +1,24 @@
 package cleancode.minesweeper.tobe;
 
-public class Minesweeper {
+import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 
+/**
+ * 지뢰 찾기 게임 역할
+ */
+public class Minesweeper {
 
     public static final int GAME_LOSE_STATUS = -1;
     public static final int GAME_WIN_STATUS = 1;
-    public static final int BOARD_ROW_SIZE = 8;
-    public static final int BOARD_COLUM_SIZE = 10;
-    private final Board board = new Board(BOARD_ROW_SIZE, BOARD_COLUM_SIZE);
+    private final Board board;
     private static int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
     private final ConsoleOutputHandler consoleOutputHandler = new ConsoleOutputHandler();
     private final ConsoleInputHandler consoleInputHandler = new ConsoleInputHandler();
+    private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
+
+    public Minesweeper(GameLevel gameLevel) {
+        board = new Board(gameLevel);
+    }
 
     public void run() {
 
@@ -47,8 +54,11 @@ public class Minesweeper {
     }
 
     private void actOnUserInput(String userInputPosition, String userInputAction) {
-        int selectedColIndex = getSelectedColIndex(userInputPosition);
-        int selectedRowIndex = getSelectedRowIndex(userInputPosition);
+
+        int selectedRowIndex = this.boardIndexConverter.getSelectedRowIndex(userInputPosition,
+            board.getRowSize());
+        int selectedColIndex = this.boardIndexConverter.getSelectedColIndex(userInputPosition,
+            board.getColSize());
 
         if (choosePlantFlagAction(userInputAction)) {
             board.flag(selectedRowIndex, selectedColIndex);
@@ -77,15 +87,6 @@ public class Minesweeper {
         gameStatus = GAME_LOSE_STATUS;
     }
 
-    private int getSelectedRowIndex(String userInputPosition) {
-        char userInputRow = getUserInputRowFrom(userInputPosition);
-        return convertRowFrom(userInputRow);
-    }
-
-    private int getSelectedColIndex(String userInputPosition) {
-        char userInputColum = getUserInputColumFrom(userInputPosition);
-        return convertColumFrom(userInputColum);
-    }
 
     private boolean chooseCellOpenAction(String userInputAction) {
         return userInputAction.equals("1");
@@ -93,15 +94,6 @@ public class Minesweeper {
 
     private boolean choosePlantFlagAction(String userInputAction) {
         return userInputAction.equals("2");
-    }
-
-
-    private char getUserInputRowFrom(String userInputPosition) {
-        return userInputPosition.charAt(1);
-    }
-
-    private char getUserInputColumFrom(String userInputPosition) {
-        return userInputPosition.charAt(0);
     }
 
     private String inputActionFromUser() {
@@ -132,39 +124,5 @@ public class Minesweeper {
         gameStatus = GAME_WIN_STATUS;
     }
 
-    private int convertRowFrom(char userInputRow) {
-        int rowIndex = Character.getNumericValue(userInputRow) - 1;
-        if (rowIndex < 0 || rowIndex >= BOARD_ROW_SIZE) {
-            throw new AppException("Invalid row input.");
-        }
-        return rowIndex;
-    }
-
-    private int convertColumFrom(char userInputColum) {
-        switch (userInputColum) {
-            case 'a':
-                return 0;
-            case 'b':
-                return 1;
-            case 'c':
-                return 2;
-            case 'd':
-                return 3;
-            case 'e':
-                return 4;
-            case 'f':
-                return 5;
-            case 'g':
-                return 6;
-            case 'h':
-                return 7;
-            case 'i':
-                return 8;
-            case 'j':
-                return 9;
-            default:
-                throw new AppException("Invalid input colum.");
-        }
-    }
 
 }

@@ -1,5 +1,8 @@
 package cleancode.minesweeper.tobe;
 
+/**
+ * 게임 보드의 각 Cell
+ */
 public class Cell {
 
     public static final String FLAG_SIGH = "⚑";

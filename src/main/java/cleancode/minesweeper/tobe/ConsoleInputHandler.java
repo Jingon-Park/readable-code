@@ -2,6 +2,9 @@ package cleancode.minesweeper.tobe;
 
 import java.util.Scanner;
 
+/**
+ * 유저 인풋 담당
+ */
 public class ConsoleInputHandler {
 
 
