@@ -1,11 +1,13 @@
 package cleancode.minesweeper.tobe;
 
+import cleancode.minesweeper.tobe.game.GameInitializable;
+import cleancode.minesweeper.tobe.game.GameRunnable;
 import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 
 /**
  * 지뢰 찾기 게임 역할
  */
-public class Minesweeper {
+public class Minesweeper implements GameRunnable, GameInitializable {
 
     public static final int GAME_LOSE_STATUS = -1;
     public static final int GAME_WIN_STATUS = 1;
@@ -20,10 +22,15 @@ public class Minesweeper {
         board = new Board(gameLevel);
     }
 
+    @Override
+    public void init() {
+        board.initGameBoard();
+    }
+
+    @Override
     public void run() {
 
         consoleOutputHandler.showStartComment();
-        board.initGameBoard();
 
         while (true) {
             try {
