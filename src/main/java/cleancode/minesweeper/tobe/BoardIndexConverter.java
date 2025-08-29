@@ -5,27 +5,27 @@ package cleancode.minesweeper.tobe;
  */
 public class BoardIndexConverter {
 
-    public int getSelectedRowIndex(String userInputPosition, int rowSize) {
+    public int getSelectedRowIndex(String userInputPosition) {
         String userInputRow = getUserInputRowFrom(userInputPosition);
-        return convertRowFrom(userInputRow, rowSize);
+        return convertRowFrom(userInputRow);
     }
 
-    public int getSelectedColIndex(String userInputPosition, int colSize) {
+    public int getSelectedColIndex(String userInputPosition) {
         char userInputColum = getUserInputColumFrom(userInputPosition);
-        return convertColumFrom(userInputColum, colSize);
+        return convertColumFrom(userInputColum);
     }
 
-    private int convertRowFrom(String userInputRow, int rowSize) {
+    private int convertRowFrom(String userInputRow) {
         int rowIndex = Integer.parseInt(userInputRow) - 1;
-        if (rowIndex < 0 || rowIndex >= rowSize) {
+        if (rowIndex < 0) {
             throw new AppException("Invalid row input.");
         }
         return rowIndex;
     }
 
-    private int convertColumFrom(char userInputColum, int colSize) {
+    private int convertColumFrom(char userInputColum) {
         int colIndex = userInputColum - 'a';
-        if (colIndex < 0 || colIndex > colSize) {
+        if (colIndex < 0) {
             throw new AppException("Invalid col input");
         }
         return colIndex;

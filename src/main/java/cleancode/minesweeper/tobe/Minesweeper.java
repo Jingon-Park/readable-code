@@ -5,6 +5,7 @@ import cleancode.minesweeper.tobe.game.GameRunnable;
 import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 import cleancode.minesweeper.tobe.io.InputHandler;
 import cleancode.minesweeper.tobe.io.OutputHandler;
+import cleancode.minesweeper.tobe.position.CellPosition;
 
 /**
  * 지뢰 찾기 게임 역할
@@ -17,9 +18,6 @@ public class Minesweeper implements GameRunnable, GameInitializable {
     private static int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
-
-
-    private final BoardIndexConverter boardIndexConverter = new BoardIndexConverter();
 
     public Minesweeper(GameLevel gameLevel, InputHandler inputHandler, OutputHandler outputHandler) {
         board = new Board(gameLevel);
@@ -52,9 +50,10 @@ public class Minesweeper implements GameRunnable, GameInitializable {
                     break;
                 }
 
-                String userInputPosition = inputPositionFromUser();
+                CellPosition userInputPosition = inputCellPositionFromUser();
                 String userInputAction = inputActionFromUser();
-                actOnUserInput(userInputPosition, userInputAction);
+
+                actionOnCell(userInputPosition, userInputAction);
             } catch (AppException e) {
                 System.out.println(e.getMessage());
 
@@ -65,28 +64,24 @@ public class Minesweeper implements GameRunnable, GameInitializable {
         }
     }
 
-    private void actOnUserInput(String userInputPosition, String userInputAction) {
+    private void actionOnCell(CellPosition cellPosition, String userInputAction) {
 
-        int selectedRowIndex = this.boardIndexConverter.getSelectedRowIndex(userInputPosition,
-            board.getRowSize());
-        int selectedColIndex = this.boardIndexConverter.getSelectedColIndex(userInputPosition,
-            board.getColSize());
 
         if (choosePlantFlagAction(userInputAction)) {
-            board.flag(selectedRowIndex, selectedColIndex);
+            board.flag(cellPosition);
             checkIfGameOver();
             return;
         }
 
         if (chooseCellOpenAction(userInputAction)) {
-            if (board.isLandMineCell(selectedRowIndex, selectedColIndex)) {
-                board.open(selectedRowIndex, selectedColIndex);
+            if (board.isLandMineCell(cellPosition)) {
+                board.open(cellPosition);
 
                 setGameStatusToLose();
                 return;
             }
 
-            board.openSurroundCell(selectedRowIndex, selectedColIndex);
+            board.openSurroundCell(cellPosition);
 
             checkIfGameOver();
             return;
@@ -113,9 +108,9 @@ public class Minesweeper implements GameRunnable, GameInitializable {
         return this.inputHandler.getUserInput();
     }
 
-    private String inputPositionFromUser() {
+    private CellPosition inputCellPositionFromUser() {
         outputHandler.showCellInputComment();
-        return this.inputHandler.getUserInput();
+        return this.inputHandler.getCellPositionFromUserInput();
     }
 
     private boolean isUserLoseTheGame() {

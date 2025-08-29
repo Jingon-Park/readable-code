@@ -1,6 +1,7 @@
 package cleancode.minesweeper.tobe.io;
 
 import cleancode.minesweeper.tobe.Board;
+import cleancode.minesweeper.tobe.position.CellPosition;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -36,8 +37,8 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println("    " + alphabets);
         for (int row = 0; row < board.getRowSize(); row++) {
             System.out.printf("%2d  ", row + 1);
-            for (int colum = 0; colum < board.getColSize(); colum++) {
-                System.out.print(board.getSign(row, colum) + " ");
+            for (int col = 0; col < board.getColSize(); col++) {
+                System.out.print(board.getSign(CellPosition.of(row, col)) + " ");
             }
             System.out.println();
         }
