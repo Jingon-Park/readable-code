@@ -3,12 +3,12 @@ package cleancode.minesweeper.tobe.cell;
 public interface Cell {
 
 
-    String FLAG_SIGH = "⚑";
-    String UNCHECKED = "□";
 
     boolean hasLandMineCount();
     boolean isLandMine();
-    String getSign();
+//    String getSign();
+
+    CellSnapshot getSnapshot();
     void flag();
     void open();
     boolean isChecked();

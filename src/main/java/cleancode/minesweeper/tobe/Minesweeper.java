@@ -6,6 +6,7 @@ import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 import cleancode.minesweeper.tobe.io.InputHandler;
 import cleancode.minesweeper.tobe.io.OutputHandler;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.user.UserAction;
 
 /**
  * 지뢰 찾기 게임 역할
@@ -50,10 +51,10 @@ public class Minesweeper implements GameRunnable, GameInitializable {
                     break;
                 }
 
-                CellPosition userInputPosition = inputCellPositionFromUser();
-                String userInputAction = inputActionFromUser();
+                CellPosition cellPosition = inputCellPositionFromUser();
+                UserAction userAction = inputActionFromUser();
 
-                actionOnCell(userInputPosition, userInputAction);
+                actionOnCell(cellPosition, userAction);
             } catch (AppException e) {
                 System.out.println(e.getMessage());
 
@@ -64,16 +65,16 @@ public class Minesweeper implements GameRunnable, GameInitializable {
         }
     }
 
-    private void actionOnCell(CellPosition cellPosition, String userInputAction) {
+    private void actionOnCell(CellPosition cellPosition, UserAction userAction) {
 
 
-        if (choosePlantFlagAction(userInputAction)) {
+        if (choosePlantFlagAction(userAction)) {
             board.flag(cellPosition);
             checkIfGameOver();
             return;
         }
 
-        if (chooseCellOpenAction(userInputAction)) {
+        if (chooseCellOpenAction(userAction)) {
             if (board.isLandMineCell(cellPosition)) {
                 board.open(cellPosition);
 
@@ -90,22 +91,22 @@ public class Minesweeper implements GameRunnable, GameInitializable {
         outputHandler.showMessage("잘못된 번호를 선택하셨습니다.");
     }
 
+    private boolean chooseCellOpenAction(UserAction userAction) {
+        return UserAction.OPEN.equals(userAction);
+    }
+
+    private boolean choosePlantFlagAction(UserAction userAction) {
+        return UserAction.FLAG.equals(userAction);
+    }
+
     private void setGameStatusToLose() {
         gameStatus = GAME_LOSE_STATUS;
     }
 
 
-    private boolean chooseCellOpenAction(String userInputAction) {
-        return userInputAction.equals("1");
-    }
-
-    private boolean choosePlantFlagAction(String userInputAction) {
-        return userInputAction.equals("2");
-    }
-
-    private String inputActionFromUser() {
+    private UserAction inputActionFromUser() {
         outputHandler.showCellActionComment();
-        return this.inputHandler.getUserInput();
+        return this.inputHandler.getUserActionFromUser();
     }
 
     private CellPosition inputCellPositionFromUser() {
