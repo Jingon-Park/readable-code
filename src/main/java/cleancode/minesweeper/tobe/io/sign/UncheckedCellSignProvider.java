@@ -1,0 +1,19 @@
+package cleancode.minesweeper.tobe.io.sign;
+
+import cleancode.minesweeper.tobe.cell.CellSnapshot;
+import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
+
+public class UncheckedCellSignProvider implements CellSignProvidable{
+
+    public static final String UNCHECKED = "□";
+
+    @Override
+    public boolean support(CellSnapshot cellSnapshot) {
+        return cellSnapshot.isSameStatus(CellSnapshotStatus.UNCHECKED);
+    }
+
+    @Override
+    public String provide(CellSnapshot cellSnapshot) {
+        return UNCHECKED;
+    }
+}

@@ -22,7 +22,7 @@ public class GameApplication {
         InputHandler inputHandler = new ConsoleInputHandler();
         OutputHandler outputHandler = new ConsoleOutputHandler();
 
-        Minesweeper minesweeper = new Minesweeper(hard, inputHandler, outputHandler);
+        Minesweeper minesweeper = new Minesweeper(normal, inputHandler, outputHandler);
         minesweeper.init();
         minesweeper.run();
     }
