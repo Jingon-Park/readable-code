@@ -6,12 +6,12 @@ import cleancode.minesweeper.tobe.cell.Cells;
 import cleancode.minesweeper.tobe.cell.EmptyCell;
 import cleancode.minesweeper.tobe.cell.LandMineCell;
 import cleancode.minesweeper.tobe.cell.NumberCell;
+import cleancode.minesweeper.tobe.game.GameStatus;
 import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
 import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +21,7 @@ public class Board {
 
     private final int landMineCount;
 
+    private GameStatus gameStatus;
     private final Cell[][] board;
 
     private final static List<RelativePosition> BOARD_RELATIVE_POSITIONS = List.of(
@@ -37,15 +38,55 @@ public class Board {
     public Board(GameLevel gameLevel) {
         board = new Cell[gameLevel.getRowSize()][gameLevel.getColSize()];
         landMineCount = gameLevel.getLandMineCount();
+        initGameStatus();
+    }
+
+
+    public void initGameBoard() {
+        CellPositions cellPositions = CellPositions.from(board);
+
+        initEmptyCells(cellPositions);
+
+        List<CellPosition> landMineCells = cellPositions.extractRandomCellPositions(
+            landMineCount);
+        initLandMineCells(landMineCells);
+
+        List<CellPosition> numberCellCandidate = cellPositions.getPositions().stream()
+            .filter(cellPosition -> !isLandMineCell(cellPosition))
+            .toList();
+
+        initNumberCells(numberCellCandidate);
+
+        initGameStatus();
+    }
+
+    private void initGameStatus() {
+        this.gameStatus = GameStatus.IN_PROGRESS;
     }
 
     private Cell findCell(CellPosition cellPosition) {
         return this.board[cellPosition.getRowIndex()][cellPosition.getColIndex()];
     }
 
-    public void flag(CellPosition cellPosition) {
+    public void flagAt(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         cell.flag();
+
+        checkIfGameOver();
+    }
+
+    private void checkIfGameOver() {
+        if (isAllCellChecked()) {
+            setGameStatusToWin();
+        }
+    }
+
+    private void setGameStatusToWin() {
+        this.gameStatus = GameStatus.WIN;
+    }
+
+    private void setGameStatusToLose() {
+        this.gameStatus = GameStatus.LOSE;
     }
 
     public int getRowSize() {
@@ -73,7 +114,7 @@ public class Board {
 
     }
 
-    public void open(CellPosition cellPosition) {
+    public void openOneAt(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         cell.open();
     }
@@ -82,21 +123,6 @@ public class Board {
         return Cells.from(this.board).isAllChecked();
     }
 
-    public void initGameBoard() {
-        CellPositions cellPositions = CellPositions.from(board);
-
-        initEmptyCells(cellPositions);
-
-        List<CellPosition> landMineCells = cellPositions.extractRandomCellPositions(
-            landMineCount);
-        initLandMineCells(landMineCells);
-
-        List<CellPosition> numberCellCandidate = cellPositions.getPositions().stream()
-            .filter(cellPosition -> !isLandMineCell(cellPosition))
-            .toList();
-
-        initNumberCells(numberCellCandidate);
-    }
 
     private void initEmptyCells(CellPositions cellPositions) {
         for (CellPosition position : cellPositions.getPositions()) {
@@ -166,11 +192,34 @@ public class Board {
             return;
         }
 
-        open(cellPosition);
+        openOneAt(cellPosition);
         if (doesCellHaveLandMineCount(cellPosition)) {
             return;
         }
 
         getCalculatablePositionList(cellPosition).forEach(this::openSurroundCell);
+    }
+
+    public void openAt(CellPosition cellPosition) {
+
+        if (isLandMineCell(cellPosition)) {
+            openOneAt(cellPosition);
+
+            setGameStatusToLose();
+        }
+
+        openSurroundCell(cellPosition);
+        checkIfGameOver();
+    }
+
+    public boolean isInProgress() {
+        return gameStatus == GameStatus.IN_PROGRESS;
+    }
+    public boolean isWinStatus() {
+        return this.gameStatus == GameStatus.WIN;
+    }
+
+    public boolean isLoseStatus() {
+        return this.gameStatus == GameStatus.LOSE;
     }
 }

@@ -14,6 +14,6 @@ public class NormalLevel implements GameLevel {
 
     @Override
     public int getLandMineCount() {
-        return 10;
+        return 8;
     }
 }
