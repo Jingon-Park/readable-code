@@ -3,7 +3,6 @@ package cleancode.minesweeper.tobe;
 import cleancode.minesweeper.tobe.config.GameConfig;
 import cleancode.minesweeper.tobe.game.GameInitializable;
 import cleancode.minesweeper.tobe.game.GameRunnable;
-import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 import cleancode.minesweeper.tobe.io.InputHandler;
 import cleancode.minesweeper.tobe.io.OutputHandler;
 import cleancode.minesweeper.tobe.position.CellPosition;
@@ -13,19 +12,19 @@ import cleancode.minesweeper.tobe.user.UserAction;
  * 지뢰 찾기 게임 역할
  */
 public class Minesweeper implements GameRunnable, GameInitializable {
-    private final Board board;
+    private final GameBoard gameBoard;
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
 
     public Minesweeper(GameConfig gameConfig) {
 
-        board = new Board(gameConfig.getGameLevel());
+        gameBoard = new GameBoard(gameConfig.getGameLevel());
         this.inputHandler = gameConfig.getInputHandler();
         this.outputHandler = gameConfig.getOutputHandler();
     }
     @Override
     public void init() {
-        board.initGameBoard();
+        gameBoard.initGameBoard();
     }
 
     @Override
@@ -33,9 +32,9 @@ public class Minesweeper implements GameRunnable, GameInitializable {
 
         outputHandler.showStartComment();
 
-        while (board.isInProgress()) {
+        while (gameBoard.isInProgress()) {
             try {
-                outputHandler.showGameBoard(board);
+                outputHandler.showGameBoard(gameBoard);
 
                 CellPosition cellPosition = inputCellPositionFromUser();
                 UserAction userAction = inputActionFromUser();
@@ -50,12 +49,12 @@ public class Minesweeper implements GameRunnable, GameInitializable {
 
         }
 
-        outputHandler.showGameBoard(board);
+        outputHandler.showGameBoard(gameBoard);
 
-        if (board.isWinStatus()) {
+        if (gameBoard.isWinStatus()) {
             outputHandler.showGameWinComment();
         }
-        if (board.isLoseStatus()) {
+        if (gameBoard.isLoseStatus()) {
             outputHandler.showGameLoseComment();
         }
     }
@@ -64,12 +63,12 @@ public class Minesweeper implements GameRunnable, GameInitializable {
 
 
         if (choosePlantFlagAction(userAction)) {
-            board.flagAt(cellPosition);
+            gameBoard.flagAt(cellPosition);
             return;
         }
 
         if (chooseCellOpenAction(userAction)) {
-            board.openAt(cellPosition);
+            gameBoard.openAt(cellPosition);
 
             return;
         }

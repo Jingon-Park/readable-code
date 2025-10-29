@@ -1,6 +1,6 @@
 package cleancode.minesweeper.tobe.io;
 
-import cleancode.minesweeper.tobe.Board;
+import cleancode.minesweeper.tobe.GameBoard;
 
 public interface OutputHandler {
 
@@ -12,7 +12,7 @@ public interface OutputHandler {
 
     void showStartComment();
 
-    void showGameBoard(Board board);
+    void showGameBoard(GameBoard gameBoard);
 
     void showMessage(String message);
 

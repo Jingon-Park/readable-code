@@ -1,6 +1,6 @@
 package cleancode.minesweeper.tobe.io;
 
-import cleancode.minesweeper.tobe.Board;
+import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.io.sign.CellSignFinder;
 import cleancode.minesweeper.tobe.io.sign.CellSignProvider;
@@ -34,13 +34,13 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     @Override
-    public void showGameBoard(Board board) {
-        String alphabets = generateColAlpahbets(board);
+    public void showGameBoard(GameBoard gameBoard) {
+        String alphabets = generateColAlpahbets(gameBoard);
         System.out.println("    " + alphabets);
-        for (int row = 0; row < board.getRowSize(); row++) {
+        for (int row = 0; row < gameBoard.getRowSize(); row++) {
             System.out.printf("%2d  ", row + 1);
-            for (int col = 0; col < board.getColSize(); col++) {
-                CellSnapshot snapshot = board.getSnapshot(CellPosition.of(row, col));
+            for (int col = 0; col < gameBoard.getColSize(); col++) {
+                CellSnapshot snapshot = gameBoard.getSnapshot(CellPosition.of(row, col));
 
                 String sign = CellSignProvider.findCellSignFrom(snapshot);
 
@@ -51,8 +51,8 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println();
     }
 
-    private String generateColAlpahbets(Board board) {
-        List<String> alphabets = IntStream.range(0, board.getColSize())
+    private String generateColAlpahbets(GameBoard gameBoard) {
+        List<String> alphabets = IntStream.range(0, gameBoard.getColSize())
             .mapToObj(index -> (char) ('a' + index))
             .map(Objects::toString)
             .toList();

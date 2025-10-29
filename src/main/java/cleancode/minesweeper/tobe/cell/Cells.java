@@ -1,9 +1,7 @@
 package cleancode.minesweeper.tobe.cell;
 
-import cleancode.minesweeper.tobe.Board;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Cells {
 
