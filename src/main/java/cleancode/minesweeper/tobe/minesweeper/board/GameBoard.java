@@ -11,6 +11,7 @@ import cleancode.minesweeper.tobe.minesweeper.board.position.CellPosition;
 import cleancode.minesweeper.tobe.minesweeper.board.position.CellPositions;
 import cleancode.minesweeper.tobe.minesweeper.board.position.RelativePosition;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 /**
@@ -107,6 +108,40 @@ public class GameBoard {
         getCalculatablePositionList(cellPosition).forEach(this::openSurroundCell);
     }
 
+    public void openSurroundCell2(CellPosition cellPosition) {
+
+        Stack<CellPosition> stack = new Stack<>();
+        stack.push(cellPosition);
+
+        while (!stack.isEmpty()) {
+            openAndPushCellAt(stack);
+        }
+    }
+
+    private void openAndPushCellAt(Stack<CellPosition> stack) {
+        CellPosition cellPosition = stack.pop();
+
+        int rowIndex = cellPosition.getRowIndex();
+        int colIndex = cellPosition.getColIndex();
+
+        if (rowIndex < 0 || rowIndex >= getRowSize() || colIndex < 0 || colIndex >= getColSize()) {
+            return;
+        }
+
+        if (isOpenedCell(cellPosition)) {
+            return;
+        }
+        if (isLandMineCell(cellPosition)) {
+            return;
+        }
+
+        openOneAt(cellPosition);
+        if (doesCellHaveLandMineCount(cellPosition)) {
+            return;
+        }
+
+        getCalculatablePositionList(cellPosition).forEach(stack::push);
+    }
     public void openAt(CellPosition cellPosition) {
 
         if (isLandMineCell(cellPosition)) {
@@ -115,7 +150,7 @@ public class GameBoard {
             setGameStatusToLose();
         }
 
-        openSurroundCell(cellPosition);
+        openSurroundCell2(cellPosition);
         checkIfGameOver();
     }
     private Cell findCell(CellPosition cellPosition) {
