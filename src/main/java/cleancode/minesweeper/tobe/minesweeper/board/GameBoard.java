@@ -10,8 +10,9 @@ import cleancode.minesweeper.tobe.minesweeper.gameLevel.GameLevel;
 import cleancode.minesweeper.tobe.minesweeper.board.position.CellPosition;
 import cleancode.minesweeper.tobe.minesweeper.board.position.CellPositions;
 import cleancode.minesweeper.tobe.minesweeper.board.position.RelativePosition;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 /**
@@ -67,10 +68,12 @@ public class GameBoard {
     public int getColSize() {
         return board[0].length;
     }
+
     public CellSnapshot getSnapshot(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         return cell.getSnapshot();
     }
+
     public void flagAt(CellPosition cellPosition) {
         Cell cell = findCell(cellPosition);
         cell.flag();
@@ -87,7 +90,6 @@ public class GameBoard {
 
         int rowIndex = cellPosition.getRowIndex();
         int colIndex = cellPosition.getColIndex();
-
 
         if (rowIndex < 0 || rowIndex >= getRowSize() || colIndex < 0 || colIndex >= getColSize()) {
             return;
@@ -110,16 +112,16 @@ public class GameBoard {
 
     public void openSurroundCell2(CellPosition cellPosition) {
 
-        Stack<CellPosition> stack = new Stack<>();
-        stack.push(cellPosition);
+        Deque<CellPosition> deque = new ArrayDeque<>();
+        deque.push(cellPosition);
 
-        while (!stack.isEmpty()) {
-            openAndPushCellAt(stack);
+        while (!deque.isEmpty()) {
+            openAndPushCellAt(deque);
         }
     }
 
-    private void openAndPushCellAt(Stack<CellPosition> stack) {
-        CellPosition cellPosition = stack.pop();
+    private void openAndPushCellAt(Deque<CellPosition> deque) {
+        CellPosition cellPosition = deque.pop();
 
         int rowIndex = cellPosition.getRowIndex();
         int colIndex = cellPosition.getColIndex();
@@ -140,8 +142,9 @@ public class GameBoard {
             return;
         }
 
-        getCalculatablePositionList(cellPosition).forEach(stack::push);
+        getCalculatablePositionList(cellPosition).forEach(deque::push);
     }
+
     public void openAt(CellPosition cellPosition) {
 
         if (isLandMineCell(cellPosition)) {
@@ -153,6 +156,7 @@ public class GameBoard {
         openSurroundCell2(cellPosition);
         checkIfGameOver();
     }
+
     private Cell findCell(CellPosition cellPosition) {
         return this.board[cellPosition.getRowIndex()][cellPosition.getColIndex()];
     }
@@ -178,6 +182,7 @@ public class GameBoard {
     public boolean isInProgress() {
         return gameStatus == GameStatus.IN_PROGRESS;
     }
+
     public boolean isWinStatus() {
         return this.gameStatus == GameStatus.WIN;
     }
@@ -185,6 +190,7 @@ public class GameBoard {
     public boolean isLoseStatus() {
         return this.gameStatus == GameStatus.LOSE;
     }
+
     private List<CellPosition> getCalculatablePositionList(CellPosition cellPosition) {
         return BOARD_RELATIVE_POSITIONS.stream().filter(cellPosition::isCalculatablePosition)
             .map(cellPosition::calculatePosition)
@@ -192,7 +198,6 @@ public class GameBoard {
             .filter(position -> position.isColIndexLessThan(getColSize()))
             .collect(Collectors.toList());
     }
-
 
 
     private void initGameStatus() {
@@ -214,6 +219,7 @@ public class GameBoard {
     private void setGameStatusToWin() {
         this.gameStatus = GameStatus.WIN;
     }
+
     private void setGameStatusToLose() {
         this.gameStatus = GameStatus.LOSE;
     }
@@ -250,7 +256,6 @@ public class GameBoard {
 
         return count;
     }
-
 
 
 }
