@@ -4,7 +4,7 @@ import cleancode.studycafe.tobemy.model.StudyCafeLockerPass;
 import cleancode.studycafe.tobemy.model.StudyCafePass;
 import java.util.List;
 
-public class OutputHandler {
+public class ConsoleOutputHandler {
 
     public void showWelcomeMessage() {
         System.out.println("*** 프리미엄 스터디카페 ***");
